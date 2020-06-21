@@ -1,0 +1,30 @@
+# ignore the common tmp, debug, intermediate and ephemeral fellas
+*.DS_Store
+*.cache
+*.swp
+*~
+*.tmp
+*.zip
+$*$
+
+# eliminate .idea files that we don't use or that we simply don't want to share
+.idea/inspectionProfiles
+.idea/jsLinters
+.idea/jsLibraryMappings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/watcherTasks.xml
+.idea/workspace.xml
+
+# directories we don't want in our repo
+coverage/
+dist/
+ignore/
+log/
+node_modules/
+reports/
+tmp/
+
+# odds and ends we don't need in our repo
+package-lock.json

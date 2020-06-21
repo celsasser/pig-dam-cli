@@ -1,0 +1,31 @@
+{
+	"linterOptions": {
+		"format": "stylish"
+	},
+	"rules": {
+		"eofline": true,
+		"indent": [
+			true,
+			"tabs"
+		],
+		"no-consecutive-blank-lines": [
+			true,
+			2
+		],
+		"no-irregular-whitespace": true,
+		"object-literal-sort-keys": true,
+		"max-line-length": {
+			"options": {
+				"limit": -1
+			}
+		},
+		"quotemark": "double",
+		"trailing-comma": [
+			true,
+			{
+				"multiline": "never",
+				"singleline": "never"
+			}
+		]
+	}
+}
