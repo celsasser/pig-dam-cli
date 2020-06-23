@@ -4,7 +4,10 @@
  * @license MIT (see project's LICENSE file)
  */
 
-export type CliCommandOptions =  {
+// tslint:disable:no-misused-new
+
+
+export type CliCommandOptions = {
 	debug?: boolean;
 	verbose?: boolean;
 	[key: string]: any
@@ -47,8 +50,12 @@ export interface CliCommandSpecification {
  * Interface for all cli commands
  */
 export interface CliCommand {
-	// tslint:disable-next-line:no-misused-new
-	new (): CliCommand;
-	specification: CliCommandSpecification;
+	/**
+	 * The command's specification.
+	 */
+	readonly specification: CliCommandSpecification;
+	/**
+	 * This is where the action is. It gets executed when this command is the chosen one.
+	 */
 	execute(options: CliCommandOptions, ...args: string[]): Promise<void>;
 }

@@ -35,11 +35,20 @@ async function executeCommand(command: CliCommand, options: commander.Command, .
 	return command.execute(options as CliCommandOptions, ...args.slice(0, args.length-1));
 }
 
+/**
+ * Loads package.json and pulls out the version
+ */
 function getModuleVersion(): string {
 	const packageJson = require("../package.json");
 	return packageJson.version;
 }
 
+/**
+ * Creates and configures an instance of `Command`:
+ * - setups up boiler plate options
+ * - configures our `candidates`
+ * - sets up execution handlers
+ */
 function setupCommander(candidates: CliCommand[]): commander.Command {
 	const program = new commander.Command()
 		.version(getModuleVersion());
