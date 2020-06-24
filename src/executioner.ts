@@ -5,6 +5,10 @@
  */
 
 import * as commander from "commander";
+import {
+	errorToDiagnosticString,
+	errorToFriendlyString
+} from "pig-dam-core";
 import {CliCommand, CliCommandOptions} from "./types";
 
 /********************
@@ -18,8 +22,12 @@ import {CliCommand, CliCommandOptions} from "./types";
  */
 export async function executeCliCommand(candidates: CliCommand[], args: string[] = process.argv): Promise<void> {
 	const commander = setupCommander(candidates);
-	return commander.parseAsync(args)
-		.then(() => undefined);
+	try {
+		await commander.parseAsync(args);
+	} catch(error) {
+		console.error(error.message);
+		process.exit(1);
+	}
 }
 
 /********************
@@ -32,7 +40,14 @@ export async function executeCliCommand(candidates: CliCommand[], args: string[]
  * @param args - execution arguments except that commander attaches itself as a final argument. We will remove it.
  */
 async function executeCommand(command: CliCommand, options: commander.Command, ...args: any[]): Promise<void> {
-	return command.execute(options as CliCommandOptions, ...args.slice(0, args.length-1));
+	return command.execute(options as CliCommandOptions, ...args.slice(0, args.length-1))
+		.catch(error => {
+			// create a simple error with a formatted error message that we will write to console in executeCliCommand
+			throw new Error(("debug" in options)
+				? `error: ${errorToDiagnosticString(error)}`
+				: `error: ${errorToFriendlyString(error)}`
+			);
+		});
 }
 
 /**
