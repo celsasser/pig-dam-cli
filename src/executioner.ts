@@ -4,11 +4,8 @@
  * @license MIT (see project's LICENSE file)
  */
 
+import * as _ from "lodash";
 import * as commander from "commander";
-import {
-	errorToDiagnosticString,
-	errorToFriendlyString
-} from "pig-dam-core";
 import {CliCommand, CliCommandOptions} from "./types";
 
 /********************
@@ -18,16 +15,15 @@ import {CliCommand, CliCommandOptions} from "./types";
 /**
  * Given the candidates we will process the args and see who is the lucky winner and run him.
  * @param candidates - probably want to use findCliCommands to populate this guy
- * @param args
+ * @param args - may optionally specify your own but `process.args` is most likely going to fit the bill.
  */
-export async function executeCliCommand(candidates: CliCommand[], args: string[] = process.argv): Promise<void> {
+export function executeCliCommand(candidates: CliCommand[], args: string[] = process.argv): Promise<void> {
 	const commander = setupCommander(candidates);
-	try {
-		await commander.parseAsync(args);
-	} catch(error) {
-		console.error(error.message);
-		process.exit(1);
-	}
+	// note: we let commander handle synchronous errors and we deal with all command runtime errors. The reason is
+	// that he doesn't handle asynchronous errors and they end up being unhandled. But if we handle them then we
+	// are responsible for logging. And we have special needs for command logging. So we divide responsibility.
+	return commander.parseAsync(args)
+		.then(() => undefined);
 }
 
 /********************
@@ -42,11 +38,14 @@ export async function executeCliCommand(candidates: CliCommand[], args: string[]
 async function executeCommand(command: CliCommand, options: commander.Command, ...args: any[]): Promise<void> {
 	return command.execute(options as CliCommandOptions, ...args.slice(0, args.length-1))
 		.catch(error => {
-			// create a simple error with a formatted error message that we will write to console in executeCliCommand
-			throw new Error(("debug" in options)
-				? `error: ${errorToDiagnosticString(error)}`
-				: `error: ${errorToFriendlyString(error)}`
-			);
+			// For the reasons documented above in `executeCliCommand` we handle async errors here and snuff the error.
+			// But don't really care one way or the other 'cause we are exiting the process.
+			if("debug" in options) {
+				console.error(error);
+			} else {
+				console.error(`error: ${error.message}`);
+			}
+			process.exit(_.get(error, "statusCode", 1));
 		});
 }
 
