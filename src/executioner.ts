@@ -4,8 +4,8 @@
  * @license MIT (see project's LICENSE file)
  */
 
-import * as _ from "lodash";
 import * as commander from "commander";
+import * as _ from "lodash";
 import {CliCommand, CliCommandOptions} from "./types";
 
 /********************
