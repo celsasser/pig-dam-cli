@@ -3,7 +3,7 @@
 	"dependencies": {
 		"commander": "5.1.0",
 		"klaw": "3.0.0",
-		"lodash": "4.17.15",
+		"lodash": "4.17.19",
 		"pig-dam-core": "0.0.7"
 	},
 	"description": "Pig DAM's configuration information server",
